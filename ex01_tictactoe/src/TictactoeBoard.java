@@ -3,23 +3,24 @@ import java.util.*;
 
 class TictactoeBoard {
 	private final int SIZE;
-	private TictactoePlayer[][] board;
+	private TictactoeSymbol[][] board;
 	private int freeCells;
 	
 	public TictactoeBoard() {
 		this(3);
 	}
 	
-	public TictactoeBoard(int size) {
+	public TictactoeBoard(int size) throws IllegalStateException {
+		if(size < 1 || size > 10)
+			throw new IllegalStateException();
+		
 		this.SIZE = size;
 		
-		this.board = new TictactoePlayer[SIZE][SIZE];
+		this.board = new TictactoeSymbol[SIZE][SIZE];
 		
 		for(int i = 0; i < SIZE; i++)
 			for(int j = 0; j < SIZE; j++)
-				board[i][j] = TictactoePlayer.NEITHER;
-		
-		//java.util.Arrays.fill(board, TictactoePlayer.NEITHER);
+				board[i][j] = TictactoeSymbol.NEITHER;
 		
 		this.freeCells = SIZE * SIZE;
 	}
@@ -32,21 +33,20 @@ class TictactoeBoard {
 		if(x < 0 || y < 0 || x >= SIZE || y >= SIZE) {
 			System.out.println("Error: Invalid position passed to markPositionOccupied()");
 			throw new IllegalArgumentException();
-			//return false; //exception should be thrown instead of returning
 		}
 		
-		return board[x][y] != TictactoePlayer.NEITHER;
+		return board[x][y] != TictactoeSymbol.NEITHER;
 	}
 	
-	public void markPositionOccupied(int x, int y, TictactoePlayer player) {
+	public void markPositionOccupied(int x, int y, TictactoeSymbol player) throws IllegalArgumentException {
 		if(x < 0 || y < 0 || x >= SIZE || y >= SIZE) {
 			System.out.println("Error: Invalid position passed to markPositionOccupied()");
-			return; //exception should be thrown instead of returning
+			throw new IllegalArgumentException();
 		}
 		
-		if(board[x][y] != TictactoePlayer.NEITHER) {
+		if(board[x][y] != TictactoeSymbol.NEITHER) {
 			System.out.println("Error: Invalid position passed to markPositionOccupied()");
-			return; //exception should be thrown instead of returning
+			throw new IllegalArgumentException();
 		}
 		
 		this.board[x][y] = player;
@@ -57,7 +57,7 @@ class TictactoeBoard {
 		return (freeCells == 0);
 	}
 	
-	public boolean hasWinningComb(TictactoePlayer player) { //perhaps this func is too long and should be separated?
+	public boolean hasWinningComb(TictactoeSymbol player) { //perhaps this func is a bit too long and should be separated
 		//a winning comb is a full row/col/diag of the player's symbols
 		//traditionally called "three in a row"
 		
@@ -122,7 +122,7 @@ class TictactoeBoard {
 		return false;
 	}
 	
-	public void print() { //more complicated than just toString() so it is better to not be overloaded?
+	public void print() { //more complicated than just toString() so it is better to not be the overloaded toString() method?
 		System.out.print("\n");
 		
 		for(int i = 0; i < 3 * SIZE; i++) {
@@ -139,10 +139,10 @@ class TictactoeBoard {
 					break;
 				
 				case 1:
-					System.out.print(" " + TictactoePlayer.getSymbol(board[i/3][0]) + " ");
+					System.out.print(" " + board[i/3][0].toChar() + " ");
 					
 					for(int j = 1; j < SIZE; j++) {
-						System.out.print("| " + TictactoePlayer.getSymbol(board[i/3][j]) + " ");
+						System.out.print("| " + board[i/3][j].toChar() + " ");
 					}
 					
 					System.out.print("\n");

@@ -5,27 +5,32 @@ class TictactoeGame {
 	private final TictactoeGameMode mode;
 	private TictactoeBoard board;
 	private boolean isFinished;
-	private TictactoePlayer activePlayer;
-	private TictactoePlayer winner;
+	private TictactoeSymbol activePlayer;
+	private TictactoeSymbol winner;
 	
 	public TictactoeGame()                       { this(3,         TictactoeGameMode.PVP); }
 	public TictactoeGame(int boardSize)          { this(boardSize, TictactoeGameMode.PVP); }
 	public TictactoeGame(TictactoeGameMode mode) { this(3,         mode); }
 		
-	public TictactoeGame(int boardSize, TictactoeGameMode mode) {
+	public TictactoeGame(int boardSize, TictactoeGameMode mode) throws IllegalStateException {
+		if(boardSize < 1 || boardSize > 10) {
+			System.out.println("Error: Illegal boardSize passed to TictactoeGame constructor");
+			throw new IllegalStateException();
+		}
+		
 		this.mode = mode;
 		this.board = new TictactoeBoard(boardSize);
 		
 		this.isFinished = false;
-		this.activePlayer = TictactoePlayer.O;
-		this.winner = TictactoePlayer.NEITHER;
+		this.activePlayer = TictactoeSymbol.O;
+		this.winner = TictactoeSymbol.NEITHER;
 	}
 		
 	public boolean isFinished() { return this.isFinished; }
 	
-	public TictactoePlayer getActivePlayer() { return this.activePlayer; }
+	public TictactoeSymbol getActivePlayer() { return this.activePlayer; }
 		
-	public void printOutcome() {
+	public void printOutcome() throws IllegalStateException {
 		switch(winner) {
 			case NEITHER:
 				System.out.println("The game was a tie!");
@@ -41,8 +46,7 @@ class TictactoeGame {
 			
 			default:
 				System.out.println("Error: invalid value of TictactoeGame.winner!");
-				//throw exception
-				break;
+				throw new IllegalStateException();
 		}		
 	}
 	
@@ -105,7 +109,7 @@ class TictactoeGame {
 			throw new IllegalStateException();
 		}
 		
-		if(activePlayer == TictactoePlayer.NEITHER) {
+		if(activePlayer == TictactoeSymbol.NEITHER) {
 			System.out.println("Error: invalid activePlayer");
 			throw new IllegalStateException();
 		}
@@ -118,7 +122,7 @@ class TictactoeGame {
 			if(!isFirstInputTry)
 				System.out.println("Error: Invalid input, try again");
 			
-			System.out.println("Player " + TictactoePlayer.getSymbol(activePlayer) + ", your turn: ");
+			System.out.println("Player " + activePlayer.toChar() + ", your turn: ");
 						
 			try{
 				scanner = new Scanner(System.in);
@@ -145,11 +149,11 @@ class TictactoeGame {
 		
 		if(board.isFull()) {
 			this.isFinished = true;
-			this.winner = TictactoePlayer.NEITHER;
+			this.winner = TictactoeSymbol.NEITHER;
 			return;
 		}
 		
-		activePlayer = TictactoePlayer.getOtherPlayer(activePlayer);
+		activePlayer = activePlayer.getOtherSymbol();
 	}
 		
 	public void play() {

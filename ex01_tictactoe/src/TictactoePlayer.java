@@ -1,11 +1,9 @@
 
-import java.util.*;
-
-enum TictactoePlayer {
+enum TictactoeSymbol {
 	X, O, NEITHER;
 	
-	public static char getSymbol(TictactoePlayer player) {
-		switch(player) {
+	public char toChar() {
+		switch(this) {
 			case O:       return 'O';
 			case X:       return 'X';
 			case NEITHER: return ' ';
@@ -13,15 +11,14 @@ enum TictactoePlayer {
 		}
 	}
 	
-	public static TictactoePlayer getOtherPlayer(TictactoePlayer player) throws  IllegalArgumentException {		
-		if(player == O)
+	public TictactoeSymbol getOtherSymbol() throws IllegalStateException {		
+		if(this.equals(O))
 			return X;
 		
-		if(player == X)
+		if(this.equals(X))
 			return O;
 		
-		System.out.println("Error: Invalid player passed to getOtherPlayer()");
-			throw new IllegalArgumentException();
-		//return player; //exception should be thrown instead of returning
+		System.out.println("Error: Illegal state of TictactoeSymbol when getOtherSymbol() is called");
+		throw new IllegalArgumentException();
 	}
 }
