@@ -1,23 +1,20 @@
 
 enum TictactoeGameMode {
 	PVP, PVC, CVP, CVC;
-	//First letter corresponds to PlayerO, Third letter corresponds to PlayerX
-	//P = player, C = computer
+	/*  First letter corresponds to PlayerO, Third letter corresponds to PlayerX,
+		whereP = player, C = computer
+	*/
 	
-	public void print() {
+	/* Purpose of separate PVC and CVP modes is to choose who plays first
+	 */
+	
+	public String toString() {
 		switch(this) {
-			case PVP:
-				System.out.println("You are now playing in Player vs Player mode");
-				break;
-			case PVC:
-				System.out.println("You are now playing in Player vs Computer mode");
-				break;
-			case CVP:
-				System.out.println("You are now playing in Computer vs Player mode");
-				break;
-			case CVC:
-				System.out.println("You are now playing in Computer vs Computer mode");
-				break;
-		}			
+			case PVP: return "Player vs Player";
+			case PVC: return "Player vs Computer";
+			case CVP: return "Computer vs Player";
+			case CVC: return "Computer vs Computer";
+			default: return "Error: invalid TictactoeGameMode value"; //added because switch requires a default case
+		}
 	}
 }

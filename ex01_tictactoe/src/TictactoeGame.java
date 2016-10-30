@@ -1,5 +1,5 @@
 
-import java.util.Scanner;
+import java.util.*;
 
 class TictactoeGame {
 	private final TictactoeGameMode mode;
@@ -99,32 +99,41 @@ class TictactoeGame {
 	}
 	*/
 		
-	public void processNextTurn() {
+	public void processNextTurn() throws IllegalStateException, InputMismatchException {
 		if(board.isFull()) {
 			System.out.println("Error: Can not processNextTurn(), board is full");
-			return;
+			throw new IllegalStateException();
 		}
 		
 		if(activePlayer == TictactoePlayer.NEITHER) {
 			System.out.println("Error: invalid activePlayer");
-			return; //exception should be thrown instead of returning
+			throw new IllegalStateException();
 		}
-		
+							
 		boolean isFirstInputTry = true;
-		Scanner scanner = new Scanner(System.in);
-		int x, y;
+		Scanner scanner = null;
+		int x = -1, y = -1;
 		
 		do {
 			if(!isFirstInputTry)
 				System.out.println("Error: Invalid input, try again");
 			
-			isFirstInputTry = false;
-			
 			System.out.println("Player " + TictactoePlayer.getSymbol(activePlayer) + ", your turn: ");
-			x = scanner.nextInt();
-			y = scanner.nextInt();
+						
+			try{
+				scanner = new Scanner(System.in);
+				x = scanner.nextInt();
+				y = scanner.nextInt();
+			} catch(InputMismatchException e) {
+				e.printStackTrace();
+				scanner.nextLine();
+			} finally {
+				//scanner.close();
+			}
 			
-		}while(x<0 || y<0 || x>3 || y>3 || board.isOccupied(x, y));
+			isFirstInputTry = false;
+						
+		}while(x < 0 || y < 0 || x > board.getSIZE() || y > board.getSIZE() || board.isOccupied(x, y));
 				
 		board.markPositionOccupied(x, y, activePlayer);
 		
@@ -146,11 +155,11 @@ class TictactoeGame {
 	public void play() {
 		System.out.println("Welcome to Tictactoe");
 		
-		mode.print();
+		System.out.println("You are now playing in" + this.mode.toString() + " mode.");
 		
-		if(mode == TictactoeGameMode.PVP) { //switching n the mode of the game =>? this
+		if(mode == TictactoeGameMode.PVP) { //switching on the mode of the game =>? should use polymorphism instead
 			
-			System.out.println("Instructions: input move as 'x y', 0<=x,y<=3 where x,y correspond to line and column of the board");
+			System.out.println("Instructions: input move as 'x y', 0<=x,y<=" + board.getSIZE() + " where x,y correspond to line and column of the board");
 			
 			while(!this.isFinished()) {
 				board.print();
@@ -158,7 +167,7 @@ class TictactoeGame {
 			}
 			
 			board.print();			
-			printOutcome();
+			this.printOutcome();
 		}
 		
 		else {

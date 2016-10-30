@@ -24,10 +24,15 @@ class TictactoeBoard {
 		this.freeCells = SIZE * SIZE;
 	}
 	
-	public boolean isOccupied(int x, int y) {
+	public int getSIZE() {
+		return this.SIZE;
+	}
+	
+	public boolean isOccupied(int x, int y) throws IllegalArgumentException {
 		if(x < 0 || y < 0 || x >= SIZE || y >= SIZE) {
 			System.out.println("Error: Invalid position passed to markPositionOccupied()");
-			return false; //exception should be thrown instead of returning
+			throw new IllegalArgumentException();
+			//return false; //exception should be thrown instead of returning
 		}
 		
 		return board[x][y] != TictactoePlayer.NEITHER;
@@ -117,7 +122,7 @@ class TictactoeBoard {
 		return false;
 	}
 	
-	public void print() {
+	public void print() { //more complicated than just toString() so it is better to not be overloaded?
 		System.out.print("\n");
 		
 		for(int i = 0; i < 3 * SIZE; i++) {

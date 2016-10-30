@@ -1,4 +1,6 @@
 
+import java.util.*;
+
 enum TictactoePlayer {
 	X, O, NEITHER;
 	
@@ -11,7 +13,7 @@ enum TictactoePlayer {
 		}
 	}
 	
-	public static TictactoePlayer getOtherPlayer(TictactoePlayer player) {		
+	public static TictactoePlayer getOtherPlayer(TictactoePlayer player) throws  IllegalArgumentException {		
 		if(player == O)
 			return X;
 		
@@ -19,6 +21,7 @@ enum TictactoePlayer {
 			return O;
 		
 		System.out.println("Error: Invalid player passed to getOtherPlayer()");
-		return player; //exception should be thrown instead of returning
+			throw new IllegalArgumentException();
+		//return player; //exception should be thrown instead of returning
 	}
 }
