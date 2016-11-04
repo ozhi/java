@@ -10,4 +10,9 @@
 * [Solution](https://github.com/ozhi/java/tree/master/ex02_todolist/src)
 * :white_check_mark: finished
 
+## 3. [AutoHouse](https://github.com/ozhi/java/tree/master/ex03_kontr1/src) :blue_car:
+* [?Statement]()
+* [Solution](https://github.com/ozhi/java/tree/master/ex03_kontr1/src)
+* :negative_squared_cross_mark: not tested
+
 
