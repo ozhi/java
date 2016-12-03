@@ -10,7 +10,9 @@ public class UI {
 		System.out.println("   1) Всички задачи, подредени по приоритет");
 		System.out.println("   2) Задачи със статус IN PROCESS");
 		System.out.println("   3) Задачи, които да се завършат в следващите три дни");
-		System.out.println("   4) Изход");
+		System.out.println("   4) Импорт от файл");
+		System.out.println("   5) Експорт във файл");
+		System.out.println("   6) Изход");
 		System.out.print("Вашият избор: ");
 	}
 	
@@ -46,7 +48,7 @@ public class UI {
 			//if above line is uncommented choice is scanned correctly only the first time!
 		}
 		
-		if(choice < 1 || choice > 4) {
+		if(choice < 1 || choice > 6) {
 			throw new java.util.InputMismatchException();
 		}
 		
@@ -61,7 +63,7 @@ public class UI {
 		
 		int menuChoice = 0;
 		
-		while(menuChoice != 4) {			
+		while(menuChoice != 6) {			
 			boolean errorInMenuChoiceInput;
 			
 			do {
@@ -92,6 +94,17 @@ public class UI {
 					System.out.println(Arrays.toString(myToDoList.getAllTasksInProgressDueInNextThreeDays()));
 					break;
 				
+				case 4:
+					myToDoList.importFromCSV();
+					System.out.println("\nTasks imported from file");
+					break;
+				
+				case 5:
+					myToDoList.exportToCSV();
+					System.out.println("Finished export");
+					break;
+				
+				case 6:
 				default:
 					System.out.println("Goodbye!");
 					break;

@@ -48,6 +48,15 @@ public class Task implements Comparable<Task> {
 		return result;
 	}
 	
+	public String toCSV() {
+		String result = this.title + "," +
+						status.toString() + "," +
+						priority + "," +
+						dueDate.toString();
+		
+		return result;
+	}
+	
 	public int compareTo(Task other) {
 		if(this.priority > other.priority)
 			return 1;

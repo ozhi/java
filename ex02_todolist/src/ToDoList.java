@@ -1,6 +1,8 @@
 
 import java.time.LocalDate;
 import java.util.*;
+import java.io.FileWriter;
+import java.nio.file.*;
 
 public class ToDoList {
 	private Task[] tasks;
@@ -47,5 +49,38 @@ public class ToDoList {
 		
 		return result;
 	}
+	
+	public void importFromCSV() {
+		System.out.println("Enter an import filename");
+		Scanner scanner = new Scanner(System.in);
+		String filename = scanner.nextLine();
+	
+		try(FileWriter out = new FileWriter(filename + ".txt");) {
 			
+			for(int i = 0; i < tasks.length; i++) {
+				out.write(tasks[i].toCSV());
+				out.write("\n");
+			}
+	    }catch(Exception e) {
+	    	e.printStackTrace();
+	    	//?
+	    }
+	}
+	
+	public void exportToCSV() {
+		System.out.println("Enter a name for the exported file");
+		Scanner scanner = new Scanner(System.in);
+		String filename = scanner.nextLine();
+	
+		try(FileWriter out = new FileWriter(filename + ".txt");) {
+			
+			for(int i = 0; i < tasks.length; i++) {
+				out.write(tasks[i].toCSV());
+				out.write("\n");
+			}
+	    }catch(Exception e) {
+	    	e.printStackTrace();
+	    	//?
+	    }
+	}
 }
