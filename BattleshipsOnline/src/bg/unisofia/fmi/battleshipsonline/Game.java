@@ -1,30 +1,10 @@
 package bg.unisofia.fmi.battleshipsonline;
 
-//is this public/private?
-class Ship {
-	// should these be private?
-	public int length;
-	public boolean isHorizontal;
-	public char startRow;
-	public int startCol;
-	
-	public Ship(int length) {
-		this.length = length;
-	}
-	
-	public Ship(int length, boolean isHorizontal, char startRow, int startCol) {
-		this.length       = length;
-		this.isHorizontal = isHorizontal;
-		this.startRow     = startRow;
-		this.startCol     = startCol;
-	}
-	
-}
-
-
 public class Game {
-	private int id;
-	private final int boardSize;
+	private String name;
+	private String creator;
+	
+	private final int boardSize = 10;
 	
 	private int board[][];
 	
@@ -33,9 +13,23 @@ public class Game {
 	
 	private boolean hasStarted;
 	private int activePlayers;
+
+	public Game(String name, String creator) {
+		this.name = name;
+		this.creator = creator;
+		
+		board = new int[boardSize][boardSize];
+		
+		initializeShips(player1Ships);
+		initializeShips(player2Ships);
+		
+		this.hasStarted = false;
+		this.activePlayers = 0;
+	}
 	
-	public Game(int id) {
-		this(id, 10);
+	@Override
+	public String toString() {
+		return "[ name=" + name + " | creator=" + creator + " | " + activePlayers + "/2 players" + "]"; 
 	}
 	
 	private void initializeShips(Ship ships[]) {
@@ -61,19 +55,30 @@ public class Game {
 		ships[9] = new Ship(2);	
 	}
 	
-	public Game(int id, int boardSize) {
-		this.id = id;
-		this.boardSize = boardSize;
-		
-		board = new int[boardSize][boardSize];
-		
-		initializeShips(player1Ships);
-		initializeShips(player2Ships);
-		
-		this.hasStarted = false;
-		this.activePlayers = 0;
+	public String getCreator() { return this.creator; }
+	
+	public String getName() { return this.name; }
+	public void setName(String name) { this.name = name; }
+}
+
+//is this public/private?
+class Ship {
+	// should these be private?
+	public int length;
+	public boolean isHorizontal;
+	public char startRow;
+	public int startCol;
+	
+	public Ship(int length) {
+		this.length = length;
 	}
 	
-	public int getId() { return this.id; }
-	public void setId(int id) { this.id = id; }
+	public Ship(int length, boolean isHorizontal, char startRow, int startCol) {
+		this.length       = length;
+		this.isHorizontal = isHorizontal;
+		this.startRow     = startRow;
+		this.startCol     = startCol;
+	}
+	
 }
+

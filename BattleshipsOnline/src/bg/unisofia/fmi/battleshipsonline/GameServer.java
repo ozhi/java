@@ -1,90 +1,71 @@
 package bg.unisofia.fmi.battleshipsonline;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-// remove unnecessary imports afterwards
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GameServer implements Runnable {
 	private int port;
 	private List<Game> activeGames;
-	private List<Game> savedGames;
-	
-	private int availableId; // the game server gives out consequent numbers as unique ids
+	//private List<Game> savedGames;
+	private Map<String, Socket> clients;
 	
 	public GameServer(int port) {
 		this.port = port;
 		
 		activeGames = new ArrayList<Game>();
-		savedGames = new ArrayList<Game>();
-		availableId = 1000;
+		//savedGames = new ArrayList<Game>();
+		clients = new ConcurrentHashMap<String, Socket>(); // choose a good data structure
 	}
 	
-	public Game createGame() {
-		Game game = new Game(availableId++);
-		System.out.println("GameServer.createGame() called");		
-		return game;
-	}
+	public List<Game> getActiveGames() { return this.activeGames; }
 	
-	public void printAllGames() {
-		System.out.println("All games on this server:");
-	}
-	
-	class ClientHandler implements Runnable {
-		private Socket socket;
-		
-		public ClientHandler(Socket socket) {
-			this.socket = socket;
+	public boolean createGame(String gameName, String creatorUsername) {
+		if(activeGames.stream().noneMatch(game -> game.getName().equals(gameName)))	{
+			activeGames.add(new Game(gameName, creatorUsername));
+			return true;
 		}
-		
-		@Override
-		public void run() {
-
-			try(
-				BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				PrintWriter pw = new PrintWriter(socket.getOutputStream())
-			) {
-			
-				String line;
-				while ((line = br.readLine()) != null) {
-					System.out.println("Server: " + "Reqest received: " + line);
+		return false;
+	}
 	
-					pw.println("E kvo '" + line + "' we?!");
-					pw.flush();
-					
-					System.out.println("Server: " + "Response sent back");
-				}
-			} catch(IOException e) {
-				e.printStackTrace();
-			}
-		}
+	public boolean deleteGame(String gameName, String creatorUsername) {
+		return activeGames.removeIf(game ->
+										game.getName().equals(gameName) &&
+										game.getCreator().equals(creatorUsername)); // only the creator of a game can delete it
+	}
+	
+	public void addClient(Socket socket, String username) {
+		clients.putIfAbsent(username, socket);
+	}
+	
+	public void removeClient(String username) {
+		clients.remove(username);
+	}
+	
+	public boolean hasClient(String username) {
+		return clients.containsKey(username);
 	}
 	
 	@Override
 	public void run() {
-		System.out.println("GameServer run() - started");
-		
-		int clientCount = 0;
+		System.out.println("The game server is now running");
 		
 		try (ServerSocket serverSocket = new ServerSocket(this.port)) {
 			while(true) {
 				Socket socket = serverSocket.accept();
-				clientCount++;
-				System.out.println("Server: Client#" + clientCount + " accepted");
-				ClientHandler clientHandler = new ClientHandler(socket);
-				new Thread(clientHandler).start();
+				
+				ServerProtocol protocol = new ServerProtocol(this, socket);
+				
+				new Thread(new ClientHandler(this, socket, protocol)).start();
 			}			
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
 		
-		System.out.println("GameServer run() - finished");
+		System.out.println("The game server is no longer running");
 	}
 }
